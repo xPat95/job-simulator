@@ -1,18 +1,12 @@
-# ⚽ CRUD API con Docker + PostgreSQL 🔵🔴 (Nivel 2)
+# ⚽ CRUD API Full Stack con Docker 🐳
 
 ---
 
 ## 🚀 Descripción
 
-Este proyecto implementa una API RESTful con operaciones CRUD utilizando **Node.js (Express)** y **PostgreSQL**, todo orquestado con **Docker Compose** 🐳.
+Este proyecto implementa una **API RESTful con operaciones CRUD** utilizando **Node.js (Express)** y **PostgreSQL**, junto con un **frontend integrado** servido con **nginx**.
 
-El sistema permite gestionar un recurso llamado `products`, cumpliendo con un contrato específico de campos (`campo1` a `campo6`) y validaciones estrictas.
-
-👉 Todo el entorno puede levantarse con un solo comando:
-
-```bash
-docker compose up --build
-```
+Todo el sistema corre con **Docker Compose en un solo comando**, cumpliendo con la integración full stack solicitada.
 
 ---
 
@@ -20,8 +14,25 @@ docker compose up --build
 
 * ⚙️ Node.js + Express
 * 🐘 PostgreSQL
+* 🌐 HTML + CSS + JavaScript (Frontend)
 * 🐳 Docker & Docker Compose
 * 🌱 dotenv
+
+---
+
+## 🏗️ Arquitectura
+
+El sistema está dividido en tres servicios:
+
+* 🐘 **db** → Base de datos PostgreSQL
+* 🚀 **api** → Backend con Node.js
+* 🌐 **frontend** → Interfaz de usuario con nginx
+
+Todo se levanta con:
+
+```bash
+docker compose up --build
+```
 
 ---
 
@@ -32,16 +43,16 @@ job-simulator/
 │
 ├── backend/
 │   ├── src/
-│   │   ├── app.js
-│   │   ├── db.js
-│   │   ├── routes.js
-│   │   └── validate.js
-│   │
 │   ├── server.js
 │   ├── init.sql
 │   ├── Dockerfile
 │   ├── .env
 │   └── .env.example
+│
+├── frontend/
+│   ├── public/
+│   ├── Dockerfile
+│   └── nginx.conf
 │
 ├── docker-compose.yml
 └── README.md
@@ -66,10 +77,10 @@ job-simulator/
 ```json
 {
   "id": 1,
-  "campo1": "string",
-  "campo2": "string",
-  "campo3": "string",
-  "campo4": 10,
+  "campo1": "Mouse",
+  "campo2": "Periférico",
+  "campo3": "Logitech",
+  "campo4": 15,
   "campo5": 149.99,
   "campo6": true
 }
@@ -77,15 +88,36 @@ job-simulator/
 
 ---
 
-## ✅ Validaciones
+## 🎨 Personalización del frontend
 
-* Todos los campos son obligatorios
-* Tipos estrictos:
+El frontend fue adaptado para mostrar nombres de dominio reales en lugar de los campos genéricos:
 
-  * `campo1`, `campo2`, `campo3` → string
-  * `campo4` → integer
-  * `campo5` → number
-  * `campo6` → boolean
+| Backend | Frontend   |
+| ------- | ---------- |
+| campo1  | Nombre     |
+| campo2  | Categoría  |
+| campo3  | Marca      |
+| campo4  | Stock      |
+| campo5  | Precio     |
+| campo6  | Disponible |
+
+👉 Importante:
+El backend mantiene los nombres `campo1...campo6` para conservar el contrato de la API, mientras que el frontend se encarga de mostrar nombres más claros al usuario.
+
+---
+
+## 🗄️ Datos iniciales
+
+Se incluyen datos de prueba en `init.sql`, los cuales se cargan automáticamente al iniciar la base de datos:
+
+```sql
+INSERT INTO products (campo1, campo2, campo3, campo4, campo5, campo6) VALUES
+('Mouse', 'Periférico', 'Logitech', 15, 149.99, true),
+('Teclado', 'Periférico', 'Redragon', 10, 299.99, true),
+('Monitor', 'Pantalla', 'Samsung', 5, 1299.50, true),
+('Laptop', 'Computadora', 'Dell', 3, 5999.99, true),
+('Audífonos', 'Audio', 'Sony', 20, 499.99, false);
+```
 
 ---
 
@@ -104,26 +136,10 @@ cd job-simulator
 docker compose up --build
 ```
 
-3. Acceder a la API:
+3. Acceder a los servicios:
 
-```bash
-http://localhost:8080/products
-```
-
----
-
-## 🧪 Ejemplo de uso (POST)
-
-```json
-{
-  "campo1": "Mouse",
-  "campo2": "Periferico",
-  "campo3": "Logitech",
-  "campo4": 10,
-  "campo5": 149.99,
-  "campo6": true
-}
-```
+* 🌐 Frontend → http://localhost:8088
+* 🚀 API → http://localhost:8080/products
 
 ---
 
@@ -140,11 +156,18 @@ DB_PASSWORD=postgres
 
 ---
 
-## 🐳 Docker
+## 🐳 Docker Compose
 
-El sistema se compone de dos servicios:
+El archivo `docker-compose.yml` permite levantar todos los servicios de forma conjunta:
 
-* 🐘 `db`: PostgreSQL
-* 🚀 `api`: backend en Node.js
+* Base de datos persistente con volumen
+* Backend conectado a PostgreSQL
+* Frontend consumiendo la API automáticamente
 
-Todo definido en `docker-compose.yml`.
+---
+
+## 🏁 Nivel alcanzado
+
+✅ NIVEL 2
+✅ Integración Frontend
+✅ Personalización del Frontend
